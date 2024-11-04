@@ -3,42 +3,28 @@ const { VERSION } = require(__dirname + '/config')
 
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 
-async function connectWhatsApp() {
-    try {
-        const { state, saveCreds } = await useMultiFileAuthState('auth_info');
-        const sock = makeWASocket({
-            auth: state,
-            printQRInTerminal: true,
-        });
+const makeWASocket = require('@whiskeysockets/baileys');
+const qrcode = require('qrcode-terminal');
 
-        sock.ev.on('connection.update', (update) => {
-            const { connection, lastDisconnect } = update;
-            console.log('Connection Update:', update);
+const startBot = async () => {
+    const socket = makeWASocket();
+    
+    socket.ev.on('connection.update', (update) => {
+        const { qr } = update;
+        if (qr) {
+            // Log the QR code as base64
+            const qrBase64 = Buffer.from(qr).toString('base64');
+            console.log("QR Code in Base64:", qrBase64);
+            
+            // Display QR code in the terminal as usual
+            qrcode.generate(qr, { small: true });
+        }
+    });
 
-            if (connection === 'close') {
-                const shouldReconnect = (lastDisconnect.error)?.output?.statusCode !== DisconnectReason.loggedOut;
-                console.log('Connection closed due to:', lastDisconnect?.error, 'Reconnecting:', shouldReconnect);
-                if (shouldReconnect) {
-                    setTimeout(connectWhatsApp, 5000); // retry after 5 seconds
-                }
-            } else if (connection === 'open') {
-                console.log('Connected');
-            }
-        });
+    // Additional bot logic here
+};
 
-        sock.ev.on('creds.update', saveCreds);
-
-        sock.ev.on('qr', (qr) => {
-            console.log('QR Code Data:', qr); // Log the QR code in Base64
-        });
-    } catch (error) {
-        console.error('Error during WhatsApp connection:', error);
-        setTimeout(connectWhatsApp, 5000); // Retry connection after 5 seconds
-    }
-}
-
-connectWhatsApp();
-
+startBot();
 
 const start = async () => {
     Debug.info(`Hitdev ${VERSION}`)

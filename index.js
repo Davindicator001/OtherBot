@@ -1,8 +1,7 @@
 const bot = require(__dirname + '/lib/smd')
 const { VERSION } = require(__dirname + '/config')
-const { default: makeWASocket, useMultiFileAuthState } = require('@whiskey/baileys');
 
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskey/baileys');
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 
 async function connectWhatsApp() {
     try {

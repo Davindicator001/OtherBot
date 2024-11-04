@@ -1,6 +1,6 @@
 {
    "name": "hitdev-md",
-   "version": "1.0.0",
+   "version": "1.0",
    "description": "Multi device whatsapp bot.",
    "main": "index.js",
    "type": "commonjs",

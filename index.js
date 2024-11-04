@@ -2,8 +2,6 @@ const bot = require(__dirname + '/lib/smd')
 const { VERSION } = require(__dirname + '/config')
 
 const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
-
-const makeWASocket = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
 
 const startBot = async () => {
@@ -25,6 +23,7 @@ const startBot = async () => {
 };
 
 startBot();
+
 
 const start = async () => {
     Debug.info(`Hitdev ${VERSION}`)

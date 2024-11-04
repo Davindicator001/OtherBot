@@ -6,15 +6,17 @@ const qrcode = require('qrcode-terminal');
 
 const startBot = async () => {
     const socket = makeWASocket();
-    
+
     socket.ev.on('connection.update', (update) => {
         const { qr } = update;
         if (qr) {
             // Log the QR code as base64
             const qrBase64 = Buffer.from(qr).toString('base64');
             console.log("QR Code in Base64:", qrBase64);
-            
+
             // Display QR code in the terminal as usual
+            console.clear(); // Clear previous logs
+            console.log("Scan this QR code:");
             qrcode.generate(qr, { small: true });
         }
     });
@@ -23,6 +25,7 @@ const startBot = async () => {
 };
 
 startBot();
+
 
 
 const start = async () => {

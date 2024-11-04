@@ -1,21 +1,25 @@
 const bot = require(__dirname + '/lib/smd')
 const { VERSION } = require(__dirname + '/config')
 
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
+const { default: makeWASocket } = require('@whiskeysockets/baileys');
 const qrcode = require('qrcode-terminal');
-
+console.log("This script runs");
 const startBot = async () => {
     const socket = makeWASocket();
 
     socket.ev.on('connection.update', (update) => {
-        const { qr } = update;
-        if (qr) {
-            // Log the QR code as base64
-            const qrBase64 = Buffer.from(qr).toString('base64');
-            console.log("QR Code in Base64:", qrBase64);
+        const { qr, connection } = update;
+        if (connection === 'close') {
+            console.log("Connection closed. Attempting to reconnect...");
+            startBot(); // Attempt to reconnect
+        }
 
-            // Display QR code in the terminal as usual
-            console.clear(); // Clear previous logs
+        if (qr) {
+            // Log the raw QR code data for debugging
+            console.log("Raw QR Code Data:", qr);
+
+            // Display QR code in the terminal
+            console.clear(); // Clear previous logs for clarity
             console.log("Scan this QR code:");
             qrcode.generate(qr, { small: true });
         }
@@ -25,8 +29,6 @@ const startBot = async () => {
 };
 
 startBot();
-
-
 
 const start = async () => {
     Debug.info(`Hitdev ${VERSION}`)
